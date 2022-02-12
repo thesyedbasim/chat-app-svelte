@@ -17,15 +17,17 @@
 	};
 </script>
 
-<form on:submit|preventDefault={handleSendMessage} style="position: fixed; bottom: 0;">
-	<div class="form-row align-items-center">
-		<div class="form-group col-aut0">
-			<input
-				type="text"
-				class="form-control"
-				placeholder="Send something..."
-				bind:value={msgContent}
-			/>
-		</div>
-	</div>
-</form>
+<div class="mt-3">
+	<form
+		on:submit|preventDefault={handleSendMessage}
+		class="w-100 pr-3"
+		style="position: fixed; bottom: 0;"
+	>
+		<input
+			type="text"
+			class="form-control w-100"
+			placeholder="Send something..."
+			bind:value={msgContent}
+		/>
+	</form>
+</div>
