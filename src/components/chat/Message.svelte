@@ -33,7 +33,11 @@
 
 <div class="card mt-3">
 	<div class="card-header">
-		{isMessageByMe ? 'Me' : $contacts[message.from]?.name || 'Unknown'}
+		{#if isMessageByMe}
+			Me
+		{:else}
+			<a href={`/contacts/${message.from}`}>{$contacts[message.from]?.name || 'Unknown'}</a>
+		{/if}
 		{#if !isMessageByMe && !isModalOpen && !$contacts[message.from]}
 			<button class="btn btn-secondary btn-outline" on:click={openModal}>Add to contact</button>
 		{/if}

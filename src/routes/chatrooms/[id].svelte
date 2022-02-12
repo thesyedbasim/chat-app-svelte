@@ -11,7 +11,7 @@
 
 	import SendMessage from '../../components/chat/SendMessage.svelte';
 
-	const { id: chatRoomId } = $page.params;
+	$: chatRoomId = $page.params.id;
 
 	let unsubscribe: Unsubscribe | undefined;
 	const init = async (id: string, user: typeof $user) => {
@@ -19,14 +19,21 @@
 
 		if ($currentChatRoom !== chatRoomId && unsubscribe) unsubscribe();
 
+		currentChatRoom.set(chatRoomId);
+
 		//@ts-ignore
 		//await fetchMembers(id, $chatRooms[chatRoomId].members);
 		unsubscribe = await subscribeMessages(id);
 	};
 
-	$: init(chatRoomId, $user);
+	const handleIdChange = (id) => {
+		if (!id) return;
 
-	$: console.log('messages', $messages);
+		if (unsubscribe) unsubscribe();
+	};
+
+	$: handleIdChange(chatRoomId);
+	$: init(chatRoomId, $user);
 
 	onDestroy(() => {
 		if (unsubscribe) unsubscribe();
@@ -40,6 +47,7 @@
 		{/if}
 	{/each} 
 {/if} -->
+
 {#if $messages[chatRoomId]}
 	{#each Object.values($messages[chatRoomId]) as message}
 		<Message {message} {chatRoomId} />
