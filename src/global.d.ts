@@ -1,0 +1,8 @@
+interface ImportMetaEnv {
+	VITE_PUBLIC_API_KEY: string;
+	VITE_PUBLIC_AUTH_DOMAIN: string;
+	VITE_PUBLIC_PROJECT_ID: string;
+	VITE_PUBLIC_STORAGE_BUCKET: string;
+	VITE_PUBLIC_MESSAGING_SENDER_ID: string;
+	VITE_PUBLIC_APP_ID: string;
+}
