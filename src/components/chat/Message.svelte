@@ -13,7 +13,7 @@
 	$: isMessageByMe = message.from === $user.uid;
 
 	const handleDeleteMessage = async () => {
-		deleteMessage(chatRoomId, message.id);
+		await deleteMessage(chatRoomId, message.id, message.isLive);
 	};
 
 	let isModalOpen = false;
@@ -29,18 +29,36 @@
 		addNewContact({ userUid: message.from, name: contactName });
 		closeModal();
 	};
+
+	let isContextMenuOpen = false;
+	const showContextMenu = () => {
+		isContextMenuOpen = true;
+	};
+	const hideContextMenu = () => {
+		isContextMenuOpen = false;
+	};
 </script>
 
-<div class="card mt-3">
-	<div class="card-header">
+<div class="card mt-3" on:mouseenter={showContextMenu} on:mouseleave={hideContextMenu}>
+	<div class="card-header d-flex justify-content-between">
 		{#if isMessageByMe}
 			Me
 		{:else}
 			<a href={`/contacts/${message.from}`}>{$contacts[message.from]?.name || 'Unknown'}</a>
 		{/if}
-		{#if !isMessageByMe && !isModalOpen && !$contacts[message.from]}
-			<button class="btn btn-secondary btn-outline" on:click={openModal}>Add to contact</button>
-		{/if}
+		<div class="context-menu">
+			<button class="btn btn-primary btn-sm" style="visibility: hidden;" id="height-fixer"
+				>&nbsp;</button
+			>
+			{#if isContextMenuOpen}
+				{#if !isMessageByMe && !isModalOpen && !$contacts[message.from]}
+					<button class="btn btn-secondary btn-outline" on:click={openModal}>Add to contact</button>
+				{/if}
+				{#if message.from === $user.uid}
+					<button class="btn btn-danger btn-sm" on:click={handleDeleteMessage}>Delete</button>
+				{/if}
+			{/if}
+		</div>
 		{#if isModalOpen}
 			<form class="form" on:submit|preventDefault={handleAddNewContact}>
 				<input
@@ -54,9 +72,4 @@
 		{/if}
 	</div>
 	<div class={`card-body ${message.isLocal ? 'text-secondary' : ''}`}>{message.content}</div>
-	<div class="card-footer">
-		{#if message.from === $user.uid}
-			<button class="btn btn-danger" on:click={handleDeleteMessage}>Delete</button>
-		{/if}
-	</div>
 </div>

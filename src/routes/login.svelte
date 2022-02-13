@@ -7,8 +7,6 @@
 	onMount(() => {
 		const user = auth.currentUser;
 
-		console.log(user);
-
 		if (user) goto('/', { replaceState: true });
 	});
 
@@ -21,8 +19,6 @@
 		if (!isValid) return;
 
 		const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-
-		console.log(userCredentials);
 	};
 
 	const submitHandler = async () => {

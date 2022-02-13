@@ -1,43 +1,26 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
 	import { page } from '$app/stores';
 
 	import { user } from '$lib/store/auth';
-	import { subscribeMessages, messages } from '$lib/store/messages';
+	import { messages, markAsRead } from '$lib/store/messages';
 	import { currentChatRoom } from '$lib/store/chatRooms';
 	import Message from '../../components/chat/Message.svelte';
-	import type { Unsubscribe } from 'firebase/auth';
 	import { afterMessage } from '$lib/store/messages';
 
 	import SendMessage from '../../components/chat/SendMessage.svelte';
 
 	$: chatRoomId = $page.params.id;
 
-	let unsubscribe: Unsubscribe | undefined;
 	const init = async (id: string, user: typeof $user) => {
 		if (!user) return;
 
-		if ($currentChatRoom !== chatRoomId && unsubscribe) unsubscribe();
-
-		currentChatRoom.set(chatRoomId);
-
-		//@ts-ignore
-		//await fetchMembers(id, $chatRooms[chatRoomId].members);
-		unsubscribe = await subscribeMessages(id);
+		if (chatRoomId !== $currentChatRoom) {
+			currentChatRoom.set(id);
+			markAsRead($currentChatRoom);
+		}
 	};
 
-	const handleIdChange = (id) => {
-		if (!id) return;
-
-		if (unsubscribe) unsubscribe();
-	};
-
-	$: handleIdChange(chatRoomId);
 	$: init(chatRoomId, $user);
-
-	onDestroy(() => {
-		if (unsubscribe) unsubscribe();
-	});
 </script>
 
 <!-- {#if $messages && $messages[chatRoomId]?.members && typeof $chatRooms[chatRoomId].members[0] !== 'string'}
