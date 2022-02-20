@@ -2,4 +2,4 @@
 
 Made with Svelte and Firebase.
 
-**This project is still in progress.**
+**This project is no longer maintained because I've decided to create a discord-clone, using sveltekit and supabase.**
